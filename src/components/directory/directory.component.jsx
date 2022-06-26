@@ -13,35 +13,35 @@ const categories = [
     "title": "Red Wines",
     "imageUrl": RedWinesImage,
     //"imageUrl": "https://i.ibb.co/cvpntL1/hats.png",
-    route: 'shop/redwines'
+    route: 'shop/hats'
   },
   {
     "id": 2,
     "title": "White Wines",
     "imageUrl": WhiteWinesImage,
     // "imageUrl": "https://i.ibb.co/px2tCc3/jackets.png"
-    route: 'shop/whitewines'
+    route: 'shop/jackets'
   },
   {
     "id": 3,
     "title": "Sparkling Wines",
     "imageUrl": SparklingWinesImage,
     //"imageUrl": "https://i.ibb.co/0jqHpnp/sneakers.png"
-    route: 'shop/sparklingwines'
+    route: 'shop/mens'
   },
   {
     "id": 4,
     "title": "Mixed Dozens",
     "imageUrl": MixedDozensImage,
     //"imageUrl": "https://i.ibb.co/GCCdy8t/womens.png"
-    route: 'shop/mixeddozens'
+    route: 'shop/sneakers'
   },
   {
     "id": 5,
     "title": "Fine & Rare",
     "imageUrl": FineRareImage,
     //"imageUrl": "https://i.ibb.co/R70vBrQ/men.png"
-    route: 'shop/fineandrare'
+    route: 'shop/womens'
   }
 ];
 
