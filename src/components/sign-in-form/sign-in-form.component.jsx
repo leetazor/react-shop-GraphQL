@@ -1,84 +1,84 @@
-import { useState } from 'react';
+import {useState} from 'react';
 
-import FormInput from '../form-input/form-input.component';
-import Button, { BUTTON_TYPE_CLASSES } from '../button/button.component';
+import FormInput from '../form-input/form-input-component';
+import Button from '../button/button.component';
 
 import {
-  signInAuthUserWithEmailAndPassword,
-  signInWithGooglePopup,
+    signInWithGooglePopup,
+    createUserDocumentFromAuth,
+    signInAuthUserWithEmailAndPassword
 } from '../../utils/firebase/firebase.utils';
 
-import { SignInContainer, ButtonsContainer } from './sign-in-form.styles';
+import './sign-in-form.styles.scss';
 
 const defaultFormFields = {
-  email: '',
-  password: '',
-};
+    email: '',
+    password: ''    
+}
 
 const SignInForm = () => {
-  const [formFields, setFormFields] = useState(defaultFormFields);
-  const { email, password } = formFields;
 
-  const resetFormFields = () => {
-    setFormFields(defaultFormFields);
-  };
+    const [formFields, setFormFields] = useState(defaultFormFields);
+    const {email, password} = formFields; 
+     
+    const resetFormFields = () => {
+        setFormFields(defaultFormFields);
+    }   
 
-  const signInWithGoogle = async () => {
-    await signInWithGooglePopup();
-  };
+    const signInWithGoogle = async () => {
+        //const response = await signInWithGooglePopup();
+        //console.log(response);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+        // below we are de-structuring {user} off the 'response' and passing in to the createUserDocumentFromAut method.
+        await signInWithGooglePopup();       
+    }  
 
-    try {
-      await signInAuthUserWithEmailAndPassword(email, password);
-      resetFormFields();
-    } catch (error) {
-      console.log('user sign in failed', error);
-    }
-  };
+    const handleSubmit = async (event) => {
+    event.preventDefault();    
+     
+        //attempt to Create an authentication with Firebase, to obtain uid (firebase/auth automatically creates it for us)
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
+        try {
+          const {user} = await signInAuthUserWithEmailAndPassword(email, password);  
+      
+          //re-setting the form fields 
+          resetFormFields();
+          
+        } catch(error) { 
+            switch(error.code) {
+              case 'auth/wrong-password':
+                alert('password is incorrect');  
+                break;
+              case 'auth/user-not-found':
+                alert('username does not exist');
+                break;
+              default:
+                console.log('error authenticating the user', error); 
+            }                                     
+        }
+    };
 
-    setFormFields({ ...formFields, [name]: value });
-  };
+    const handleChange = (event) => {
+    const {name, value} = event.target;
+      //below we are spreading all of the form fields and only updating the value of the field with the same name as event.target.name      
+      setFormFields({...formFields, [name]: value});      
+    };
 
-  return (
-    <SignInContainer>
-      <h2>Already have an account?</h2>
-      <span>Sign in with your email and password</span>
-      <form onSubmit={handleSubmit}>
-        <FormInput
-          label='Email'
-          type='email'
-          required
-          onChange={handleChange}
-          name='email'
-          value={email}
-        />
-
-        <FormInput
-          label='Password'
-          type='password'
-          required
-          onChange={handleChange}
-          name='password'
-          value={password}
-        />
-        <ButtonsContainer>
-          <Button type='submit'>Sign In</Button>
-          <Button
-            buttonType={BUTTON_TYPE_CLASSES.google}
-            type='button'
-            onClick={signInWithGoogle}
-          >
-            Sign In With Google
-          </Button>
-        </ButtonsContainer>
-      </form>
-    </SignInContainer>
-  );
-};
+    return (
+        <div className='sign-up-container'>
+            <h2>Already have an account?</h2>
+            <span>Sign in with your email and password</span>
+            <form onSubmit ={handleSubmit}>
+                <FormInput label="Email" type="email" required onChange={handleChange} name="email" value={email} />
+                <FormInput label="Password" type="password" required onChange={handleChange} name="password" value={password} />
+                <div className="buttons-container">
+                    <Button type="submit">Sign In</Button>
+                    <Button type="button" buttonType="google" onClick={signInWithGoogle} >Google sign In</Button>
+                </div>
+                             
+            </form>
+        </div>
+    )
+}
 
 export default SignInForm;
